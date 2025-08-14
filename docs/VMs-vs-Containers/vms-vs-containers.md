@@ -1,3 +1,6 @@
+# VM's vs Containers
+
+```text
 ======================================================================
       VIRTUAL MACHINES (VMs) 🖥️           VS          CONTAINERS 📦
 ======================================================================
@@ -55,3 +58,4 @@ RULE OF THUMB:
 - Use VMs for full OS isolation, multiple OS types, and legacy/secure workloads.
 - Use Containers for lightweight, fast, and scalable app deployments.
 ======================================================================
+```
