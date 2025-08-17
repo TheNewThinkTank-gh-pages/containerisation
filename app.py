@@ -1,6 +1,7 @@
 # app.py
-from flask import Flask, jsonify
+
 import os
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
@@ -13,5 +14,8 @@ def hello():
 
 if __name__ == "__main__":
     # Best practice: don’t hardcode host/port, use env vars
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+    app.run(
+        host="0.0.0.0",
+        port=int(os.getenv("PORT", 5000))
+        )
 

@@ -61,7 +61,7 @@ dive flask-multi
 ``` bash
 docker run -d -p 5000:5000 flask-single
 docker run -d -p 5001:5000 flask-multi
-``
+```
 
 Visit:
 
@@ -69,3 +69,21 @@ http://localhost:5000 (single-stage)
 
 http://localhost:5001 (multi-stage)
 
+## Debugging
+
+``` bash
+# Make sure nothing else is running
+docker stop $(docker ps -q)
+
+docker exec -it <container_id> netstat -tlnp
+```
+
+## Docker-compose
+
+``` bash
+export COMPOSE_BAKE=true
+docker compose up --build
+# http://localhost:5000 → single-stage container
+# http://localhost:5001 → multi-stage container
+docker compose down
+```

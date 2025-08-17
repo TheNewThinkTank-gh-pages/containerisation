@@ -5,14 +5,16 @@ FROM python:3.12-slim AS builder
 
 WORKDIR /app
 
-# Install build tools (if you had native deps)
+# Install build tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
  && rm -rf /var/lib/apt/lists/*
 
-# Install Python deps into a local folder (not system-wide)
+# Copy requirements first for better caching
 COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
+
+# Install dependencies system-wide (into /usr/local)
+RUN pip install --no-cache-dir -r requirements.txt
 
 
 # =========================
@@ -22,20 +24,18 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+# Create non-root user early
+RUN useradd -m appuser
+
 # Copy installed packages from builder
-COPY --from=builder /root/.local /root/.local
+COPY --from=builder /usr/local /usr/local
 
-# Update PATH for user-installed Python packages
-ENV PATH=/root/.local/bin:$PATH
-
-# Copy only the application code
+# Copy application code
 COPY app.py .
 
-# Run as non-root user
-RUN useradd -m appuser
+# Switch to non-root user
 USER appuser
 
 EXPOSE 5000
 
 CMD ["python", "app.py"]
-
