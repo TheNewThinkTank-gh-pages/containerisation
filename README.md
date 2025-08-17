@@ -95,9 +95,17 @@ docker exec -it <container_id> netstat -tlnp
 ## Docker-compose
 
 ``` bash
-export COMPOSE_BAKE=true
-docker compose up --build
+# Step 1: Build using bake (faster, parallel, better caching)
+docker buildx bake --load
+
+# Step 2: Run containers (no rebuild needed, images are already loaded)
+docker compose up
+
+# Or, docker compose up --build
+
 # http://localhost:5000 → single-stage container
 # http://localhost:5001 → multi-stage container
+
 docker compose down
 ```
+
