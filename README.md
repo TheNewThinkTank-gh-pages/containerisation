@@ -12,7 +12,7 @@ Theoretical background for containers.
 - Dockerfile -> Image -> Container
 - Compose
 - Bake (`docker buildx bake`), optimize build speed (parallelism, caching). HCL etc.
-- K8S (and Swarm)
+- K8S (and Swarm), K8S's API server makes things flow smoothly, e.g. using ArgoCD
 - Registries (public/private)
 - Security (scanning, CVE's, SBOM)
 
