@@ -1,0 +1,21 @@
+# Ignore Python cache and bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore virtual environments
+venv/
+.env/
+
+# Ignore system files
+.DS_Store
+*.swp
+
+# Ignore local dev/test files
+tests/
+*.log
+
+# Ignore Git
+.git
+.gitignore
+
