@@ -1,8 +1,15 @@
 services:
   flask-single:
+    # image: flask-single
+    # mem_limit: 512m        # Maximum memory limit. Or, 512MB # Can use MB, GB, KB
+    # mem_reservation: 256m  # Memory reservation (soft limit)
+    # cpus: 0.5             # Maximum CPU limit (50% of one CPU)
+  
     build:
       context: .
       dockerfile: Dockerfile.single
+      tags:
+        - "flask-single"
     container_name: flask-single
     ports:
       - "5001:5000"
@@ -16,6 +23,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.multi
+      tags:
+        - "flask-multi"
     container_name: flask-multi
     ports:
       - "5002:5000"
