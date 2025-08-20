@@ -2,6 +2,11 @@
 
 After starting the Docker Daemon,
 
+``` bash
+# start asciinema recording
+asciinema rec ~/Desktop/containerization.cast -i 2
+```
+
 1. Show the app
 
 ``` bash
@@ -65,13 +70,26 @@ http://localhost:5001 (single-stage)
 
 http://localhost:5002 (multi-stage)
 
-## Debugging
+stop containers:
 
 ``` bash
-# Make sure nothing else is running
 docker stop $(docker ps -q)
+```
 
-docker exec -it <container_id> netstat -tlnp
+## Scanning
+
+``` bash
+IMAGE_NAME="flask-single"
+trivy image $IMAGE_NAME
+
+# Scan with specific severity levels
+trivy image --severity HIGH,CRITICAL $IMAGE_NAME
+
+# Generate JSON report
+trivy image --format json --output "scans/results-${IMAGE_NAME//[:\/]/-}-$(date +%Y-%m-%d).json" $IMAGE_NAME
+
+# Custom script, to summarize HIGH/CRITICAL vulnerabilities, and to use in CI/CD later.
+./trivy_vulnerability_counter.sh $IMAGE_NAME
 ```
 
 ## Docker-compose
@@ -81,13 +99,39 @@ docker exec -it <container_id> netstat -tlnp
 # using docker-bake.hcl
 docker buildx bake --load
 
+cat compose.yml
+
+# resource limits
+docker inspect <container_name>
+docker stats --no-stream <container_name>
+
 # Step 2: Run containers (no rebuild needed, images are already loaded)
 docker compose up
 
-# Or, docker compose up --build
+# Or, just `docker compose up` directly.
+# Or, to also re-build:
+# docker compose up --build
 
 # http://localhost:5001 → single-stage container
 # http://localhost:5002 → multi-stage container
 
+# Ctrl + c, stop containers.
+
 docker compose down
+```
+
+## Cleanup
+
+Optionally, show cleanup of stopped containers and images, from CLI, Docker Desktop or both.
+
+``` bash
+docker images
+docker rmi -f <image-name> <another-image-name>
+```
+
+``` bash
+# Finish asciinema
+exit
+enter
+asciinema upload ~/Desktop/containerization.cast
 ```
