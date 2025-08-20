@@ -1,12 +1,27 @@
 # Best practice: use slim Python image
 FROM python:3.12-slim
 
+# Fixing SSL certs for Debian Linux
+RUN apt-get update && apt-get install -y ca-certificates
+
+RUN find /usr/local/share/ca-certificates/ -name "*.crt" -exec cat {} \; > /usr/local/share/ca-certificates/zscaler_root.crt
+RUN update-ca-certificates
+
+# Update system certificates
+RUN cat /usr/local/share/ca-certificates/zscaler_root.crt >> /etc/ssl/certs/ca-certificates.crt
+
 # Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Install and update certifi first using trusted hosts
+RUN pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org certifi
+
+# Update certifi certificates
+RUN cat /usr/local/share/ca-certificates/zscaler_root.crt >> /usr/local/lib/python3.12/site-packages/certifi/cacert.pem
+
+# Now install other dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt
 
 # Copy source code
 COPY app.py .
@@ -20,4 +35,3 @@ EXPOSE 5000
 
 # Entrypoint
 CMD ["python", "app.py"]
-
